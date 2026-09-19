@@ -20,6 +20,7 @@ from ament_index_python.packages import get_package_share_directory
 
 from launch import LaunchDescription, LaunchContext
 from launch.actions import DeclareLaunchArgument, TimerAction, OpaqueFunction
+from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
@@ -179,6 +180,11 @@ def generate_launch_description():
             description="Use fake hardware instead of real hardware.",
         ),
         DeclareLaunchArgument(
+            "launch_rviz",
+            default_value="false",
+            description="Start RViz alongside the robot.",
+        ),
+        DeclareLaunchArgument(
             "robot_controller",
             default_value="joint_trajectory_controller",
             choices=["forward_position_controller",
@@ -245,6 +251,7 @@ def generate_launch_description():
         name="rviz2",
         output="log",
         arguments=["-d", rviz_config_file],
+        condition=IfCondition(LaunchConfiguration("launch_rviz")),
     )
 
     joint_state_broadcaster_spawner = OpaqueFunction(

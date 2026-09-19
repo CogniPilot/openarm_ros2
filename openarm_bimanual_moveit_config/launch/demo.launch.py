@@ -17,6 +17,7 @@ import xacro
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription, LaunchContext
 from launch.actions import DeclareLaunchArgument, TimerAction, OpaqueFunction
+from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.substitutions import FindPackageShare
@@ -214,6 +215,7 @@ def moveit_nodes_spawner(context: LaunchContext, arm_type, use_fake_hardware):
             output="log",
             arguments=["-d", rviz_cfg],
             parameters=[moveit_params],
+            condition=IfCondition(LaunchConfiguration("launch_rviz")),
         ),
     ]
 
@@ -228,6 +230,11 @@ def generate_launch_description():
             description="Arm type. Accepts: v1.0, v10, openarm_v1.0, v2.0, v20, openarm_v2.0, etc."
         ),
         DeclareLaunchArgument("use_fake_hardware", default_value="true"),
+        DeclareLaunchArgument(
+            "launch_rviz",
+            default_value="false",
+            description="Start RViz alongside MoveIt.",
+        ),
         DeclareLaunchArgument(
             "robot_controller",
             default_value="joint_trajectory_controller",

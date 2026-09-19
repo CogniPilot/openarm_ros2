@@ -111,8 +111,15 @@ class OpenArmHW : public hardware_interface::SystemInterface {
   const double GRIPPER_KP = 5.0;
   const double GRIPPER_KD = 0.1;
 
+  // The pinch gripper mechanism moves the motor roughly twice as far as the
+  // URDF joint. Measured on hardware: 89.68 deg of motor travel for the 45 deg
+  // joint range on the left arm (1.993) and 88.37 deg on the right (1.964).
+  // Override with the gripper_ratio hardware parameter if a unit differs.
+  const double GRIPPER_PINCH_RATIO = 2.0;
+
   double gripper_kp_ = GRIPPER_KP;
   double gripper_kd_ = GRIPPER_KD;
+  double gripper_ratio_ = GRIPPER_PINCH_RATIO;
 
   // Configuration
   std::string can_interface_;
